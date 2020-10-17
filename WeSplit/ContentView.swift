@@ -10,29 +10,29 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var checkAmount = ""
-    @State private var numberOfPeople = 2
+    @State private var numberOfPeople = ""
     @State private var tipPercentage = 2
     
     let tipPercentages = [10, 15, 20, 25, 0]
-    
-    var totalPerPerson: Double {
+
+    var totalAmount: Double {
         let amountWithoutPersents = Double(checkAmount) ?? 0
         let persents = amountWithoutPersents / 100 * Double(tipPercentages[tipPercentage])
-        
-        return (amountWithoutPersents + persents) / Double(numberOfPeople + 2)
+        return amountWithoutPersents + persents
     }
-    
+
+    var totalPerPerson: Double {
+        let number = Double(numberOfPeople)
+        return number == nil ? 0.0 : totalAmount / (Double(numberOfPeople) ?? 0.0)
+    }
+
     var body: some View {
         NavigationView {
             Form {
                 Section {
                     TextField("Amount", text: $checkAmount)
-                    
-                    Picker("Number of people", selection: $numberOfPeople) {
-                        ForEach(2 ..< 100) {
-                            Text("\($0) people")
-                        }
-                    }
+                    TextField("Number of people", text: $numberOfPeople)
+                        .keyboardType(.decimalPad)
                 }
                 
                 Section(header: Text("How much tip do you want to leave?")) {
@@ -43,9 +43,13 @@ struct ContentView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
+                
+                Section(header: Text("Total amount")) {
+                    Text("$\(totalAmount, specifier: "%.2f")")
+                }
 
-                Section {
-                    Text("$\(totalPerPerson, specifier: "%2.f")")
+                Section(header: Text("Amount per person")) {
+                    Text("$\(totalPerPerson, specifier: "%.2f")")
                 }
             }
             .navigationBarTitle("We Split")
