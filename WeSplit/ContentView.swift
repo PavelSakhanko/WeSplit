@@ -31,6 +31,7 @@ struct ContentView: View {
             Form {
                 Section {
                     TextField("Amount", text: $checkAmount)
+                        .keyboardType(.decimalPad)
                     TextField("Number of people", text: $numberOfPeople)
                         .keyboardType(.decimalPad)
                 }
@@ -46,6 +47,7 @@ struct ContentView: View {
                 
                 Section(header: Text("Total amount")) {
                     Text("$\(totalAmount, specifier: "%.2f")")
+                        .foregroundColor(tipPercentages[tipPercentage] == 0 ? .red : .black)
                 }
 
                 Section(header: Text("Amount per person")) {
